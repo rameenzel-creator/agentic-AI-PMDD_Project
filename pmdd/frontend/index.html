@@ -1,0 +1,295 @@
+as<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PMDD — Pragmatic Meaning Drift Detector</title>
+  <meta name="description" content="A 5-agent agentic AI system for scientific linguistic analysis of large corpora. Detects pragmatic meaning drift using Grice, Halliday, and Sinclair frameworks." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ── NAVBAR ─────────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="13" stroke="url(#g1)" stroke-width="2"/>
+        <path d="M8 14 L14 8 L20 14 L14 20 Z" fill="url(#g1)" opacity="0.8"/>
+        <circle cx="14" cy="14" r="3" fill="white"/>
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
+            <stop stop-color="#3b82f6"/>
+            <stop offset="1" stop-color="#8b5cf6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="nav-title">PMDD</span>
+    </div>
+    <span class="nav-subtitle">Pragmatic Meaning Drift Detector</span>
+  </div>
+  <div class="nav-actions">
+    <div class="api-status" id="apiStatus">
+      <span class="status-dot"></span>
+      <span class="status-text">Checking...</span>
+    </div>
+    <button class="btn-ghost" id="historyBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<section class="hero" id="heroSection">
+  <div class="hero-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot pulse"></span>
+      5-Agent Agentic AI System · Google Gemini · Scientific Research
+    </div>
+    <h1 class="hero-title">
+      Detect <span class="gradient-text">Pragmatic Meaning</span><br/>
+      Drift in Large Corpora
+    </h1>
+    <p class="hero-sub">
+      Upload any text corpus. Our 5 autonomous agents — grounded in Grice, Halliday, Austin, Lyons, and Sinclair —
+      analyze pragmatic intent, semantic field shifts, and register changes to produce a peer-review-ready scientific report.
+    </p>
+
+    <!-- Upload Card -->
+    <div class="upload-card glass" id="uploadCard">
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".txt,.csv,.json" hidden />
+        <div class="upload-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="upload-primary">Drop your corpus file here</p>
+        <p class="upload-secondary">Supports .txt, .csv, .json — up to any size</p>
+        <button class="btn-upload" id="browseBtn">Browse Files</button>
+        <div class="file-selected hidden" id="fileSelected">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="fileName">No file selected</span>
+        </div>
+      </div>
+
+      <div class="upload-config">
+        <div class="config-row">
+          <div class="config-field">
+            <label for="corpusName">Corpus Name</label>
+            <input type="text" id="corpusName" placeholder="e.g., Political Speeches 2000-2024" value="Uploaded Corpus" />
+          </div>
+          <div class="config-field">
+            <label for="keywords">Target Keywords <span class="label-hint">(comma-separated)</span></label>
+            <input type="text" id="keywords" placeholder="community, power, identity, change" value="community, power, change" />
+          </div>
+        </div>
+        <button class="btn-analyze" id="analyzeBtn" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run 5-Agent Analysis
+        </button>
+      </div>
+    </div>
+
+    <!-- Framework Pills -->
+    <div class="framework-pills">
+      <span class="pill">Grice (1975)</span>
+      <span class="pill">Austin/Searle</span>
+      <span class="pill">Halliday (1978)</span>
+      <span class="pill">Lyons (1977)</span>
+      <span class="pill">Sinclair (1991)</span>
+      <span class="pill">Fairclough (1992)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── ANALYSIS PANEL ─────────────────────────────────────── -->
+<section class="analysis-panel hidden" id="analysisPanel">
+
+  <!-- Agent Progress -->
+  <div class="panel-section" id="progressSection">
+    <div class="section-header">
+      <h2>Agent Pipeline</h2>
+      <span class="section-tag">Live</span>
+    </div>
+    <div class="agents-grid" id="agentsGrid">
+      <!-- Populated by JS -->
+    </div>
+    <!-- Terminal Log -->
+    <div class="terminal" id="terminalLog">
+      <div class="terminal-header">
+        <div class="terminal-dots"><span></span><span></span><span></span></div>
+        <span class="terminal-title">PMDD Agent Log</span>
+      </div>
+      <div class="terminal-body" id="terminalBody"></div>
+    </div>
+  </div>
+
+  <!-- Results Dashboard (hidden until complete) -->
+  <div class="results hidden" id="resultsSection">
+
+    <!-- MDS Score Hero -->
+    <div class="mds-hero" id="mdsHero">
+      <div class="mds-left">
+        <h2>Meaning Drift Score</h2>
+        <div class="mds-score-wrapper">
+          <canvas id="mdsGauge" width="220" height="220"></canvas>
+          <div class="mds-score-inner">
+            <span class="mds-number" id="mdsNumber">0</span>
+            <span class="mds-max">/100</span>
+          </div>
+        </div>
+        <div class="mds-level" id="mdsLevel">—</div>
+        <div class="mds-sub-scores" id="mdsSubScores"></div>
+      </div>
+      <div class="mds-right">
+        <div class="executive-card glass">
+          <h3>Executive Summary</h3>
+          <p id="executiveSummary">—</p>
+        </div>
+        <div class="score-breakdown">
+          <div class="score-bar-item">
+            <span>Pragmatic Drift</span>
+            <div class="bar-track"><div class="bar-fill danger" id="pragmaticBar" style="width:0%"></div></div>
+            <span id="pragmaticScore">—</span>
+          </div>
+          <div class="score-bar-item">
+            <span>Semantic Drift</span>
+            <div class="bar-track"><div class="bar-fill warning" id="semanticBar" style="width:0%"></div></div>
+            <span id="semanticScore">—</span>
+          </div>
+          <div class="score-bar-item">
+            <span>Register Drift</span>
+            <div class="bar-track"><div class="bar-fill accent" id="registerBar" style="width:0%"></div></div>
+            <span id="registerScore">—</span>
+          </div>
+        </div>
+        <div class="mds-actions">
+          <button class="btn-primary" id="downloadBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF Report
+          </button>
+          <button class="btn-secondary" id="newAnalysisBtn">New Analysis</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="quantitative">📊 Quantitative (40%)</button>
+        <button class="tab-btn" data-tab="qualitative">🔬 Qualitative (60%)</button>
+        <button class="tab-btn" data-tab="semantic">🗺️ Semantic Fields</button>
+        <button class="tab-btn" data-tab="reflection">🤖 Agentic Log</button>
+        <button class="tab-btn" data-tab="conclusions">📄 Conclusions</button>
+      </div>
+
+      <!-- Tab: Quantitative -->
+      <div class="tab-panel active" id="tab-quantitative">
+        <div class="tab-grid">
+          <div class="chart-card glass">
+            <h3>Top Content Words (Global)</h3>
+            <canvas id="freqChart" height="280"></canvas>
+          </div>
+          <div class="chart-card glass">
+            <h3>Collocation MI Scores</h3>
+            <canvas id="miChart" height="280"></canvas>
+          </div>
+        </div>
+        <div class="glass-card mt-4">
+          <h3>Section Statistics</h3>
+          <div id="sectionStatsTable"></div>
+        </div>
+        <div class="glass-card mt-4">
+          <h3>Statistical Findings</h3>
+          <div id="statFindings"></div>
+        </div>
+      </div>
+
+      <!-- Tab: Qualitative -->
+      <div class="tab-panel hidden" id="tab-qualitative">
+        <div class="evidence-header">
+          <h3>Pragmatic Drift Evidence</h3>
+          <p class="theory-tag">Speech Act Theory (Searle 1969) · Gricean Maxims (Grice 1975) · Politeness Theory (Brown & Levinson 1987)</p>
+        </div>
+        <div id="pragmaticEvidence"></div>
+        <div class="evidence-header mt-6">
+          <h3>Register Analysis</h3>
+          <p class="theory-tag">Register Analysis (Halliday 1978 — Tenor, Field, Mode)</p>
+        </div>
+        <div id="registerAnalysis"></div>
+        <div class="evidence-header mt-6">
+          <h3>Critical Discourse Analysis</h3>
+          <p class="theory-tag">Fairclough (1992) — Power, Ideology & Social Context in Text</p>
+        </div>
+        <div class="glass-card" id="cdaCard"></div>
+      </div>
+
+      <!-- Tab: Semantic Fields -->
+      <div class="tab-panel hidden" id="tab-semantic">
+        <div class="evidence-header">
+          <h3>Semantic Field Shifts</h3>
+          <p class="theory-tag">Semantic Field Theory (Lyons 1977) — Lexical Migration Between Fields</p>
+        </div>
+        <div id="semanticShifts"></div>
+        <div class="evidence-header mt-6">
+          <h3>Section-Level Field Distribution</h3>
+        </div>
+        <div id="sectionFields"></div>
+      </div>
+
+      <!-- Tab: Agentic Log -->
+      <div class="tab-panel hidden" id="tab-reflection">
+        <div class="evidence-header">
+          <h3>Agentic Reflection & Self-Correction Log</h3>
+          <p class="theory-tag">Scientific transparency: all agent decisions and self-corrections are recorded for peer review.</p>
+        </div>
+        <div id="reflectionLog"></div>
+      </div>
+
+      <!-- Tab: Conclusions -->
+      <div class="tab-panel hidden" id="tab-conclusions">
+        <div class="glass-card">
+          <h3>Research Conclusions</h3>
+          <p id="conclusionsText"></p>
+        </div>
+        <div class="glass-card mt-4">
+          <h3>Research Recommendations</h3>
+          <ul id="recommendationsList"></ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /results -->
+</section>
+
+<!-- ── HISTORY MODAL ──────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="historyModal">
+  <div class="modal glass">
+    <div class="modal-header">
+      <h3>Analysis History</h3>
+      <button class="modal-close" id="closeHistory">✕</button>
+    </div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

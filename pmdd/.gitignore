@@ -1,0 +1,21 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local environment & secrets
+.env
+
+# Local database
+memory.db
+
+# User uploads and generated reports
+uploads/*
+!uploads/.gitkeep
+reports/*
+!reports/.gitkeep
+
+# OS generated files
+.DS_Store
+Thumbs.db

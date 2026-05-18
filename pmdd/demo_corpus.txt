@@ -1,0 +1,16 @@
+# PMDD Demo Corpus: Scientific Evolution
+
+## Section 1: Traditional Methodology
+Scientific research in the late 20th century relied heavily on localized laboratory observations. 
+The standard protocol for data collection was manual entry into physical logbooks. 
+Researchers often published findings in specialized print journals with limited circulation.
+The 'protocol' was seen as a rigid set of instructions that must be followed to maintain empirical validity.
+Statistical significance was the primary metric for truth in these early experiments.
+
+## Section 2: Digital Transformation
+The 'protocol' has now shifted from a physical logbook to an automated digital pipeline.
+Modern scientists utilize cloud computing to store petabytes of experimental data.
+Open-source journals have replaced the traditional print model, favoring rapid dissemination.
+Algorithms now handle the 'protocol' automatically, reducing human error in the laboratory.
+The semantic shift of 'protocol' from a manual rulebook to a digital code base is a key example of linguistic drift.
+This drift reflects the broader ideological change from human-centric to machine-assisted science.
