@@ -3,6 +3,9 @@
 ───────────────────────────────────────────────────────── */
 'use strict';
 
+const BACKEND_URL = 'https://agentic-ai-pmdd-project.onrender.com';
+
+
 const AGENT_META = [
   { id: 1, name: 'Corpus Preprocessor', theory: 'Sinclair (1991) — Tokenization & Segmentation', icon: '⚙️' },
   { id: 2, name: 'Pragmatic Analyzer', theory: 'Grice (1975) · Austin/Searle · Brown & Levinson', icon: '🔍' },
@@ -65,7 +68,7 @@ function bindEvents() {
 // ── Health Check ──────────────────────────────────────────
 async function checkHealth() {
   try {
-    const r = await fetch('/api/health');
+    const r = await fetch(`${BACKEND_URL}/api/health`);
     const d = await r.json();
     const dot = $('apiStatus').querySelector('.status-dot');
     const txt = $('apiStatus').querySelector('.status-text');
@@ -138,7 +141,7 @@ async function runAnalysis() {
 
   log('Starting PMDD 5-Agent Analysis pipeline...', 'info');
 
-  const evtSrc = new EventSourcePolyfill('/api/analyze', fd);
+  const evtSrc = new EventSourcePolyfill(`${BACKEND_URL}/api/analyze`, fd);
 
   evtSrc.on('progress', d => {
     const { agent, status, message, data } = d;
@@ -454,7 +457,7 @@ function renderReflectionLog(log_entries) {
 async function showHistory() {
   $('historyModal').classList.remove('hidden');
   try {
-    const r = await fetch('/api/history');
+    const r = await fetch(`${BACKEND_URL}/api/history`);
     const d = await r.json();
     $('historyList').innerHTML = (d.runs || []).map(run => `
       <div class="history-item">
@@ -467,7 +470,7 @@ async function showHistory() {
 // ── Download ──────────────────────────────────────────────
 function downloadReport() {
   if (!currentRunId) return;
-  window.open(`/api/report/${currentRunId}`, '_blank');
+  window.open(`${BACKEND_URL}/api/report/${currentRunId}`, '_blank');
 }
 
 // ── Reset ─────────────────────────────────────────────────
