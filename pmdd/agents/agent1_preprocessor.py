@@ -13,9 +13,17 @@ from pathlib import Path
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    import subprocess, sys
-    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
-    nlp = spacy.load("en_core_web_sm")
+    try:
+        import en_core_web_sm
+        nlp = en_core_web_sm.load()
+    except ImportError:
+        import subprocess, sys
+        subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+        try:
+            nlp = spacy.load("en_core_web_sm")
+        except OSError:
+            import en_core_web_sm
+            nlp = en_core_web_sm.load()
 
 
 def _clean_text(raw: str) -> str:
