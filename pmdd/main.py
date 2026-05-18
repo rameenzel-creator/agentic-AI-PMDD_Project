@@ -42,13 +42,7 @@ REPORT_DIR.mkdir(exist_ok=True)
 # Initialize database
 init_db()
 
-# Mount frontend static files
-app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-
-
-@app.get("/")
-async def serve_index():
-    return FileResponse(str(STATIC_DIR / "index.html"))
+# API Routes
 
 
 @app.get("/api/health")
@@ -196,3 +190,8 @@ async def download_report(run_id: str):
         media_type="application/pdf",
         filename=f"PMDD_Scientific_Report_{run_id}.pdf",
     )
+
+
+# Mount static files at root / (must be defined LAST to prevent blocking other API routes)
+app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
+
