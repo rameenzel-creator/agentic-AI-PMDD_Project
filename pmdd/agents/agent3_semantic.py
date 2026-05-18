@@ -47,7 +47,7 @@ Return ONLY a valid JSON ARRAY, one object per segment, with EXACTLY these keys:
 }}"""
 
 
-def run_agent3(segments: list[dict], keywords: list[str], run_id: str, batch_size: int = 10) -> dict:
+def run_agent3(segments: list[dict], keywords: list[str], run_id: str, batch_size: int = 10, progress_callback = None) -> dict:
     """
     Analyze semantic fields and register for corpus sections in batches.
     Returns: drift_map and per-section register summary.
@@ -60,6 +60,9 @@ def run_agent3(segments: list[dict], keywords: list[str], run_id: str, batch_siz
 
     for i in range(0, len(working_segments), batch_size):
         batch = working_segments[i:i + batch_size]
+
+        if progress_callback:
+            progress_callback(f"Agent 3: Processing batch {i//batch_size + 1} of {(len(working_segments)-1)//batch_size + 1} (segments {i} to {i+len(batch)-1})...")
 
         memory_hint = ""
         for kw in keywords:
@@ -127,6 +130,8 @@ def run_agent3(segments: list[dict], keywords: list[str], run_id: str, batch_siz
                     })
                     if drift:
                         update_lesson(AGENT_ID, word, result.get("register", ""), actual)
+                        if progress_callback:
+                            progress_callback(f"Agent 3: Detected meaning drift for keyword '{word}' in Segment #{seg['id']} (Expected: {expected} -> Actual: {actual})")
 
             save_decision(
                 run_id=run_id, agent_id=AGENT_ID, segment_id=seg["id"],

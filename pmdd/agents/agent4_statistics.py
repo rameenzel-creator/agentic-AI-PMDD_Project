@@ -21,11 +21,14 @@ def _compute_mi_score(word: str, collocate: str, word_freq: int, collocate_freq:
     return math.log2(p_wc / (p_w * p_c + 1e-10))
 
 
-def run_agent4(segments: list[dict]) -> dict:
+def run_agent4(segments: list[dict], progress_callback = None) -> dict:
     """
     Compute quantitative corpus statistics.
     Returns frequency tables, collocations, keyness, and TTR per section.
     """
+    if progress_callback:
+        progress_callback("Agent 4: Initiating statistical parsing and word indexing across segments...")
+
     # --- Per-section word lists ---
     section_words: dict[int, list[str]] = defaultdict(list)
     all_words: list[str] = []
@@ -55,6 +58,9 @@ def run_agent4(segments: list[dict]) -> dict:
             "top_20_words": [{"word": w, "frequency": f, "relative_freq": round(f / max(total, 1), 4)} for w, f in top_20],
         }
 
+    if progress_callback:
+        progress_callback("Agent 4: Frequency tables and Type-Token Ratios (TTR) compiled successfully.")
+
     # --- Keyness: compare each section to the rest of the corpus ---
     sections = list(section_words.keys())
     keyness_tables = {}
@@ -75,6 +81,10 @@ def run_agent4(segments: list[dict]) -> dict:
 
         keyness_sorted = sorted(keyness, key=lambda x: x["keyness_score"], reverse=True)[:15]
         keyness_tables[sec] = keyness_sorted
+
+    if progress_callback:
+        progress_callback("Agent 4: Cross-section log-ratio keyness profiles computed successfully.")
+        progress_callback("Agent 4: Initializing co-occurrence analysis and Mutual Information (MI) scoring...")
 
     # --- Collocation Window Analysis (±5 word window) ---
     # Build flat list of (position, word, section)
@@ -116,6 +126,10 @@ def run_agent4(segments: list[dict]) -> dict:
             bigrams[(words[i], words[i + 1])] += 1
 
     top_bigrams = [{"bigram": f"{a} {b}", "frequency": f} for (a, b), f in bigrams.most_common(15)]
+
+    if progress_callback:
+        progress_callback("Agent 4: Mutual Information (MI) collocations and bigram frequencies generated.")
+        progress_callback("Agent 4: Calculating hapax legomena lexical richness coefficient...")
 
     # --- Hapax Legomena ---
     hapax = [w for w, f in global_freq.items() if f == 1]

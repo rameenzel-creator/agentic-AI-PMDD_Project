@@ -86,6 +86,33 @@ async def analyze(
         def sse(event: str, data: dict) -> str:
             return f"event: {event}\ndata: {json.dumps(data)}\n\n"
 
+        progress_queue = asyncio.Queue()
+        loop = asyncio.get_running_loop()
+        res_dict = {}
+
+        def make_callback(agent_id: int):
+            def cb(message: str):
+                loop.call_soon_threadsafe(
+                    progress_queue.put_nowait,
+                    {"agent": agent_id, "status": "running", "message": message}
+                )
+            return cb
+
+        async def run_with_progress(coro, key):
+            task = asyncio.create_task(coro)
+            while not task.done():
+                try:
+                    msg = await asyncio.wait_for(progress_queue.get(), timeout=0.05)
+                    yield sse("progress", msg)
+                    progress_queue.task_done()
+                except asyncio.TimeoutError:
+                    pass
+            res_dict[key] = await task
+            while not progress_queue.empty():
+                msg = progress_queue.get_nowait()
+                yield sse("progress", msg)
+                progress_queue.task_done()
+
         try:
             # Save run to memory
             save_run(run_id, corpus_name, 0)
@@ -106,7 +133,11 @@ async def analyze(
             # Agent 2
             yield sse("progress", {"agent": 2, "status": "running", "message": f"Agent 2: Pragmatic analysis (analyzing up to 200 segments)..."})
             from agents.agent2_pragmatic import run_agent2
-            a2 = await asyncio.to_thread(run_agent2, a1["segments"], run_id)
+            async for progress_msg in run_with_progress(
+                asyncio.to_thread(run_agent2, a1["segments"], run_id, 10, make_callback(2)), "a2"
+            ):
+                yield progress_msg
+            a2 = res_dict["a2"]
             analyzed = sum(1 for s in a2 if s.get("speech_act") not in ("Unknown", "Not Analyzed"))
             corrected = sum(1 for s in a2 if s.get("self_corrected"))
             yield sse("progress", {
@@ -117,7 +148,11 @@ async def analyze(
             # Agent 3
             yield sse("progress", {"agent": 3, "status": "running", "message": "Agent 3: Semantic field & register detection..."})
             from agents.agent3_semantic import run_agent3
-            a3 = await asyncio.to_thread(run_agent3, a1["segments"], keyword_list, run_id)
+            async for progress_msg in run_with_progress(
+                asyncio.to_thread(run_agent3, a1["segments"], keyword_list, run_id, 10, make_callback(3)), "a3"
+            ):
+                yield progress_msg
+            a3 = res_dict["a3"]
             n_sections = len(a3.get("section_summaries", []))
             yield sse("progress", {
                 "agent": 3, "status": "done",
@@ -128,7 +163,11 @@ async def analyze(
             # Agent 4
             yield sse("progress", {"agent": 4, "status": "running", "message": "Agent 4: Computing corpus statistics..."})
             from agents.agent4_statistics import run_agent4
-            a4 = await asyncio.to_thread(run_agent4, a1["segments"])
+            async for progress_msg in run_with_progress(
+                asyncio.to_thread(run_agent4, a1["segments"], make_callback(4)), "a4"
+            ):
+                yield progress_msg
+            a4 = res_dict["a4"]
             yield sse("progress", {
                 "agent": 4, "status": "done",
                 "message": f"Agent 4 complete — {len(a4.get('collocations', {}))} collocation profiles generated",

@@ -103,7 +103,7 @@ def _chain_of_verification(segment: dict, original: dict) -> dict:
     return verified
 
 
-def run_agent2(segments: list[dict], run_id: str, batch_size: int = 10) -> list[dict]:
+def run_agent2(segments: list[dict], run_id: str, batch_size: int = 10, progress_callback = None) -> list[dict]:
     """
     Main entry: analyze segments in batches, apply CoV on low-confidence items.
     Returns enriched segment list with pragmatic annotations.
@@ -116,6 +116,9 @@ def run_agent2(segments: list[dict], run_id: str, batch_size: int = 10) -> list[
     for i in range(0, len(working_segments), batch_size):
         batch = working_segments[i:i + batch_size]
         
+        if progress_callback:
+            progress_callback(f"Agent 2: Processing batch {i//batch_size + 1} of {(len(working_segments)-1)//batch_size + 1} (segments {i} to {i+len(batch)-1})...")
+
         # Build combined memory context for the batch
         memory_ctx = ""
         for seg in batch:
@@ -149,12 +152,16 @@ def run_agent2(segments: list[dict], run_id: str, batch_size: int = 10) -> list[
             # CoV for low-confidence or directive/expressive (more ambiguous)
             confidence = float(analysis.get("confidence", 1.0))
             if confidence < 0.75 or analysis.get("speech_act") in ("Expressive", "Directive"):
+                if progress_callback:
+                    progress_callback(f"Agent 2: Ambiguity detected in Segment #{seg['id']} (Speech Act: '{analysis.get('speech_act')}', Conf: {confidence}). Triggering CoV review...")
                 verified = _chain_of_verification(seg, analysis)
                 reason = verified.get("correction_reason", "")
                 if reason and reason != "verified_no_change":
                     corrected = True
                     correction_reason = reason
                     analysis = verified
+                    if progress_callback:
+                        progress_callback(f"  └─ [Self-Correction] Segment #{seg['id']} corrected: {reason}")
 
             # Save to episodic memory
             save_decision(
