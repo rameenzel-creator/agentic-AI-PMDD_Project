@@ -1,25 +1,26 @@
-﻿# PMDD: Pragmatic Meaning Drift Detector  
+# PMDD: Pragmatic Meaning Drift Detector  
 ## Multi-Agent System for Linguistic Analysis
 
-**PMDD** is an advanced computational linguistics research platform that detects subtle meaning shifts (pragmatic drift) across large text corpora. Using a team of specialized AI agents and Google's Gemma 3.0, PMDD quantifies semantic divergence while preserving corpus-level fidelity and providing rigorous, evidence-backed reports.
+**PMDD** is a cutting-edge computational linguistics research platform designed to detect subtle meaning shifts (pragmatic drift) across large text corpora. Using a team of 5 specialized cooperative AI agents and the high-performance **NVIDIA-hosted Gemma 3** (`google/gemma-3n-e4b-it`) model, PMDD quantifies semantic divergence while providing research-grade, evidence-backed visual dashboards and downloadable PDF reports.
 
 ---
 
 ## 📋 Project Overview
 
-PMDD addresses the challenge of tracking meaning evolution in language over time. By analyzing large-scale textual data, it identifies:
+PMDD solves the challenge of tracking meaning evolution and lexical drift in scientific and historical language over time. By uploading a text corpus, the system automatically analyzes:
 
-* **Semantic Shifts**: How the meaning of words and phrases drifts from their original usage.
-* **Contextual Evolution**: Changes in how concepts are used across different historical periods.
-* **Pragmatic Nuances**: Subtle changes in connotation, implication, and persuasive intent.
+*   **Speech Act Shifts**: Dominant illocutionary act changes (Searle) across different corpus segments.
+*   **Gricean Maxim Violations**: Increases/decreases in Quantity, Quality, Relation, and Manner violations.
+*   **Politeness & Register Drift**: Tenor, Field, and Mode shifts (Halliday) alongside register borrowing events.
+*   **Semantic Field Migrations**: Lexical drift of core keywords moving from their traditional semantic fields (Lyons) to new ones.
+*   **Corpus Statistics**: Statistical validation including type-token ratios (TTR), Bigrams, Hapax Legomena, and Pointwise Mutual Information (PMI) collocational profiles.
 
 ### Key Features
 
-* **Multi-Agent Architecture**: A team of 5 specialized agents work collaboratively to analyze texts.
-* **Gemma 3.0 Integration**: Powered by Google's state-of-the-art Gemma 3.0 language model.
-* **Quantitative & Qualitative Analysis**: Combines statistical rigor with linguistic interpretation.
-* **Research-Grade PDF Reports**: Generates comprehensive reports with 40% quantitative and 60% qualitative evidence.
-* **Scalable Processing**: Designed to handle large text corpora efficiently.
+*   **Multi-Agent Pipeline**: 5 autonomous agents work sequentially, communicating and passing analytical context through an episodic SQLite memory database.
+*   **Snappy API Retries**: Advanced error retry mechanisms with randomized exponential backoff (jitter) to slip through rate limits seamlessly.
+*   **Unified Web Dashboard**: Responsive, rich UI featuring dynamic Server-Sent Events (SSE) providing live progress logs.
+*   **Research-Grade PDF Reports**: Generates formal, double-column PDF reports featuring a calibrated 40% quantitative and 60% qualitative evidence balance.
 
 ---
 
@@ -27,143 +28,95 @@ PMDD addresses the challenge of tracking meaning evolution in language over time
 
 ### Prerequisites
 
-* **Python 3.8+**
-* **Gemma 3.0 API Key**: Obtain from [Google AI Studio](https://aistudio.google.com/)
-* **Environment Variables**:
-
-Create a `.env` file in the `pmdd` directory with the following:
-
-```env
-GEMINI_API_KEY=your_gemma_api_key_here
-```
+*   **Python 3.10+**
+*   **NVIDIA API Key**: Obtain a free API key from the NVIDIA API Catalog.
+*   **Environment Variables**:
+    Create a `.env` file inside the `pmdd` directory:
+    ```env
+    NVIDIA_API_KEY=your_nvidia_api_key_here
+    ```
 
 ### Installation
 
-1. **Clone the repository**
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/rameenzel-creator/agentic-AI-PMDD_Project.git
+    cd agentic-AI-PMDD_Project
+    ```
 
-```bash
-git clone https://github.com/rameenzel-creator/agentic-AI-PMDD_Project.git
-cd agentic-AI-PMDD_Project
-```
+2.  **Create and activate a virtual environment**
+    ```bash
+    python -m venv .venv
+    .venv\Scripts\activate  # On macOS/Linux use: source .venv/bin/activate
+    ```
 
-2. **Create a virtual environment**
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-3. **Install dependencies**
-
-```bash
-pip install -r requirements.txt
-```
+3.  **Install dependencies**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ---
 
 ## 🧠 Agent System Architecture
 
-The PMDD system uses a collaborative team of 5 specialized agents:
+The PMDD framework consists of five highly specialized linguistic agents:
 
-### The Agent Team
-
-| Agent | Role | Key Responsibilities |
-|-------|------|----------------------|
-| **Agent 1: Preprocessor** | Data Preparation | Text cleaning, chunking, metadata extraction |
-| **Agent 2: Pragmatic Analyst** | Context & Intent | Connotation, implied meaning, speech acts |
-| **Agent 3: Semantic Analyst** | Meaning Evolution | Concept drift, synonym analysis, usage patterns |
-| **Agent 4: Statistics Specialist** | Quantitative Analysis | Frequency, sentiment scores, statistical significance |
-| **Agent 5: Orchestrator** | System Coordination | Task scheduling, results synthesis, report generation |
+| Agent | Theoretical Framework | Role & Key Responsibilities |
+| :--- | :--- | :--- |
+| **Agent 1: Preprocessor** | Sinclair's Corpus Linguistics | Text normalization, sentence segmentation, temporal/genre section splitting, and token lemmatization. |
+| **Agent 2: Pragmatic Analyst** | Austin/Searle Speech Act, Gricean Maxims | Connotation analysis, Gricean maxim violation tracking, politeness rating, and Chain-of-Verification (CoV) self-correction on low-confidence assessments. |
+| **Agent 3: Semantic Analyst** | Lyons' Semantic Field Theory | Registers and Tenor, Field, Mode shifts. Identifies keyword field migration, register borrowing events, and builds lexical drift maps. |
+| **Agent 4: Statistician** | Sinclair & Scott Keyness | Pure mathematical computation. Calculates per-section TTRs, hapax legomena ratios, bigram tables, and MI collocational score matrices. |
+| **Agent 5: Orchestrator** | Fairclough's Critical Discourse Analysis | Evaluates cross-agent outcomes, checks analysis coverage, runs final CDA synthesis, computes the overall Meaning Drift Score (MDS), and prepares the report metadata. |
 
 ### Collaboration Workflow
 
 ```mermaid
 graph TD
-    A[Input Corpus] --> B[Agent 1: Preprocessor]
+    A[Input Corpus File] --> B[Agent 1: Preprocessor]
     B --> C[Agent 2: Pragmatic Analyst]
     B --> D[Agent 3: Semantic Analyst]
     B --> E[Agent 4: Statistics Specialist]
     C --> F[Agent 5: Orchestrator]
     D --> F
     E --> F
-    F --> G[Research-Grade PDF Report]
+    F --> G[Beautiful Web Dashboard & Live Logs]
+    F --> H[Research-Grade PDF Report]
 ```
 
 ---
 
-## 🏃‍♂️ Running the System
+## 🏃‍♂️ Running the Web Server
 
-### Single Run Mode
-
-Run a full analysis with a single command:
+Start the application with a single command:
 
 ```bash
-python -m pmdd.run
+# Move to the pmdd directory
+cd pmdd
+
+# Start the FastAPI uvicorn development server
+python run.py
 ```
 
-**Example Output:**
+Once the server initializes, navigate to:
+👉 **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 
-```
-Starting PMDD Analysis...
-Initializing 5-agent system...
-
-===========================================================
-PMDD Scientific Analysis Report
-Generated: 2026-05-18
-Corpus: sample_corpus.txt
-===========================================================
-
-
-
-✓ Analysis completed successfully!
-Report saved to: reports/PMDD_Analysis_2026-05-18_14-30-05.pdf
-```
-
-### Multi-Run (Corpus Comparison) Mode
-
-Compare two different time periods by specifying two corpus files:
-
-```bash
-python pmdd/run.py --corpus_old path/to/old_corpus.txt --corpus_new path/to/new_corpus.txt
-```
-
-### Batch Mode
-
-Analyze all corpora in the `uploads/` directory:
-
-```bash
-python pmdd/run.py --batch
-```
+### 💡 Demo Run Instructions
+For a rapid demonstration of the entire pipeline, select the pre-made **`demo_corpus.txt`** in the web dashboard. This corpus is specially designed with a curated linguistic drift for the keyword **'protocol'** (evolving from traditional manual logs to digital cloud pipelines) and runs in **under 60 seconds**!
 
 ---
 
-## 📊 Report Structure
+## 📊 PDF Report Structure
 
-The generated PDF reports feature:
+The generated reports (located in `pmdd/reports/`) are constructed with academic rigor:
 
-### Page 1: Executive Summary
-* **Project Overview**: Purpose, date, corpus name
-* **Key Findings**: High-level summary of semantic shifts
-* **Overall Scores**: Quantitative metrics and sentiment analysis
-* **Visual Dashboard**: Color-coded score badges
-
-### Page 2-3: Quantitative Analysis
-* **Text Statistics**: Word count, lexical density, sentence length
-* **Sentiment Analysis**: Sentiment distribution and trends
-* **Frequency Analysis**: Top appearing words and phrases
-* **Key Concepts**: Evolution of core concepts
-
-### Page 4-6: Qualitative Analysis
-* **Pragmatic Drift**: Contextual meaning changes
-* **Semantic Evolution**: Concept transformation detection
-* **Evidence-Based Insights**: Direct corpus quotes and examples
-* **Comparative Analysis** (for multi-run mode): Before/after comparisons
-
-### Page 7: Conclusion & Recommendations
-* **Comprehensive Summary**: Integrated findings from all agents
-* **Linguistic Insights**: Deep dive into meaning shifts
-* **Future Work**: Suggested research directions
-* **Full References**: Source citations from corpus
+1.  **Title Page & MDS:** Displays the overall Meaning Drift Score (0-100) and its general classification.
+2.  **Executive Summary:** Deep qualitative and quantitative overview of the semantic shifts.
+3.  **Corpus Metadata (Agent 1):** Detailed segments, words, and basic density counts.
+4.  **Quantitative substrate (Agent 4 - 40%):** Tabular section-level TTRs, collocates, and MI score matrices.
+5.  **Qualitative Evidence (Agents 2 & 3 - 60%):** Searle speech-act breakdowns, Gricean violations, and direct corpus quote boxes.
+6.  **Agentic Reflection Log:** Complete transparency showing where the pragmatic agent invoked its CoV self-correction rules.
+7.  **Conclusions & Future Directions:** Grounded scholarly recommendations for future research.
 
 ---
 
@@ -171,179 +124,46 @@ The generated PDF reports feature:
 
 ```
 pmdd/
-├── agents/                  # 5 specialized agents
+├── agents/                  # The 5 specialized linguistic agents
 │   ├── agent1_preprocessor.py
 │   ├── agent2_pragmatic.py
 │   ├── agent3_semantic.py
 │   ├── agent4_statistics.py
 │   └── agent5_orchestrator.py
-├── utils/                   # Utility modules
-│   ├── gemma.py             # Gemma 3.0 API integration
-│   ├── memory.py            # Agent memory and state management
-│   └── pdf_generator.py     # Report generation
-├── frontend/                # Web interface
+├── utils/                   # Shared utility modules
+│   ├── llm_handler.py       # NVIDIA Gemma API connector with randomized backoff
+│   ├── memory.py            # Episodic SQLite memory manager & database
+│   └── pdf_generator.py     # PDF Generator wrapped with character-sanitization
+├── frontend/                # Beautiful SPA Web Dashboard
 │   ├── index.html
-│   ├── style.css
-│   └── app.js
-├── reports/                 # Generated PDF reports
-├── uploads/                 # Input corpora
-│   └── sample_corpus.txt
-├── demo_corpus.txt          # Sample analysis corpus
-├── requirements.txt         # Project dependencies
-└── run.py                   # Main execution script
+│   ├── style.css            # Dark mode, premium styling
+│   └── app.js               # Reactive SSE client
+├── reports/                 # Holds generated PDF reports (ignored by Git)
+├── uploads/                 # Holds raw uploaded text corpora (ignored by Git)
+├── demo_corpus.txt          # Pre-packaged fast-running demo corpus
+├── requirements.txt         # Package requirements (FastAPI, spaCy, FPDF, requests)
+└── run.py                   # Main startup launcher script
 ```
 
 ---
 
-## 🧩 Agent Details
+## 🔌 API Key Configuration
 
-### Agent 1: Preprocessor
-
-**Purpose**: Prepares raw text for analysis
-
-**Key Functions**:
-* Text normalization (cleaning, lowercasing)
-* Sentence segmentation
-* Paragraph and semantic chunking
-* Tokenization and lexical analysis
-* Metadata extraction (dates, sources)
-
-### Agent 2: Pragmatic Analyst
-
-**Purpose**: Analyzes contextual meaning and intent
-
-**Key Functions**:
-* Sentiment analysis
-* Connotation detection
-* Implied meaning extraction
-* Speech act classification
-* Contextual drift analysis
-
-### Agent 3: Semantic Analyst
-
-**Purpose**: Detects semantic evolution and meaning changes
-
-**Key Functions**:
-* Concept drift detection
-* Synonym analysis
-* Word sense disambiguation
-* Semantic network analysis
-* Usage pattern tracking
-
-### Agent 4: Statistics Specialist
-
-**Purpose**: Performs quantitative analysis and validation
-
-**Key Functions**:
-* Frequency analysis
-* Lexical density calculation
-* Sentiment scoring
-* Statistical significance testing
-* Data visualization
-
-### Agent 5: Orchestrator
-
-**Purpose**: Coordinates the multi-agent system and generates reports
-
-**Key Functions**:
-* Task scheduling and distribution
-* Results synthesis
-* Cross-agent validation
-* Report generation (40% quantitative / 60% qualitative)
-* Memory management
-
----
-
-## 🔌 Gemma 3.0 Integration
-
-PMDD uses Google's Gemma 3.0 model for advanced linguistic analysis. The system:
-
-* Uses prompt engineering to guide analysis
-* Maintains context across agent interactions
-* Validates findings through multi-agent consensus
-* Generates research-quality reports
-
-### API Key Configuration
-
-1. Obtain a Gemma 3.0 API key from [Google AI Studio](https://aistudio.google.com/)
-2. Create a `.env` file in the `pmdd` directory:
-
+Make sure your API Catalog key is defined in the `.env` file at the root of the project:
 ```env
-GEMINI_API_KEY=your_gemma_api_key_here
+NVIDIA_API_KEY=nvapi-your-key-here
 ```
 
 ---
 
-## 📊 Report Generation Details
+## 🎯 Future Roadmap
 
-### Output Formats
-
-* **PDF**: Research-grade reports with charts and evidence
-* **Markdown**: For easy sharing and editing
-* **JSON**: Structured data for further analysis
-
-### Report Structure
-
-* **Executive Summary**: Key findings and overall scores
-* **Quantitative Analysis**: Statistical data and metrics
-* **Qualitative Analysis**: Linguistic insights and evidence
-* **Conclusion**: Comprehensive summary and recommendations
-
----
-
-## 🧪 Testing
-
-### Unit Tests
-
-```bash
-python -m unittest tests/test_gemma.py
-python -m unittest tests/test_memory.py
-```
-
-### Integration Tests
-
-```bash
-python -m unittest tests/test_agents.py
-```
-
-### System Tests
-
-```bash
-python -m unittest tests/test_system.py
-```
-
----
-
-## 🚀 Production Deployment
-
-### Docker Deployment
-
-```bash
-# Build the Docker image
-docker build -t pmdd .
-
-# Run the container
-docker run -e GEMINI_API_KEY=your-key -p 8000:8000 pmdd
-```
-
-### Web Interface
-
-Access the web interface at `http://localhost:8000` after starting the server:
-
-```bash
-python pmdd/frontend/app.py
-```
-
----
-
-## 🎯 Future Enhancements
-
-* [ ] Advanced semantic drift detection algorithms
-* [ ] Real-time monitoring of language trends
-* [ ] Multi-model integration (Gemma + Claude + GPT)
-* [ ] Web interface with live results
-* [ ] Automated research paper generation
-* [ ] API for external access
+*   [x] Highly responsive web interface with live progress monitoring
+*   [x] Smart exponential backoff with random jitter to defeat API 429 errors
+*   [x] Unicode font character sanitization to protect PDF exports
+*   [ ] Multi-model integration (adding Claude 3.5 & GPT-4o-mini alongside Gemma 3)
+*   [ ] Interactive semantic field network graph visualization in the dashboard
+*   [ ] Persistent Postgres/Supabase database engine integration for mega-scale corpora
 
 ---
 
@@ -355,17 +175,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Support
 
-For questions, collaboration, or issues, please contact:
+For queries, collaborations, or research issues, please reach out to:
 
-* **Email**: [rameenafzal295@gmail.com]
-* **GitHub**: https://github.com/rameenzel-creator/agentic-AI-PMDD_Project
-
----
-
-*"ÆªThe most powerful learning tool ever created is a team of AI agents working together."Æª
+*   **Email**: rameenafzal295@gmail.com
+*   **GitHub**: [rameenzel-creator](https://github.com/rameenzel-creator)
 
 ---
 
-**Last Updated**: 2026-05-18  
-**Version**: 2.1.0  
-**Status**: Production-Ready
+**Last Updated**: May 2026  
+**Version**: 2.2.0  
+**Status**: Production-Ready / Stable
